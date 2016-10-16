@@ -21,6 +21,92 @@
 
 <body>
 
+	<!-- This is what will be initially displayed on the screen -->
+	<div id="game">
+		<p>This is where the word will go</p>
+	</div>
+
+
+	<script type="text/javascript">
+
+		// Define words that can computer will select from
+		var wordsList = ["falkens maze", "black jack", "gin rummy", "hearts", "bridge", "checkers", "chess", "poker", "fighter combat", "guerrilla engagement", "desert warfare", "air to ground actions", "theaterwide tactical warfare", "theaterwide biotoxic and chemical warfare", "global thermonuclear war"];
+
+		// Set the initial global variables
+		var wins = 0;
+		var losses = 0;
+		// guessesLeft is how many attempts user has remaining in the round
+		var guessesLeft = 13;
+		// guessesSoFar is an array that will hold all the user's guesses in each round
+		var guessesSoFar = [];
+		// userGuess is what the user picks by pressing a key
+		var userGuess = null;
+		// Have computer pick a word and store it in wordToBeGuessed
+		var wordToBeGuessed = wordsList[Math.floor(Math.random() * wordsList.length)];
+		// arrayFromWord is an array that will hold the letters of the wordToBeGuessed
+		var arrayFromWord = []
+
+		// rip the wordToBeGuessed apart into an array such that each character is one
+		// array element followed by false as the next element then the second character
+		// then the element false, and so on. For example:
+		// if the word was "hi" then array would be ["h", false, "i", false]
+		// However, if the character is a space then the next element should be true
+
+		for (var i = 0, j = 0; i < wordToBeGuessed.length; i++) {
+			arrayFromWord[j] = wordToBeGuessed.charAt(i);
+			j++
+			if (wordToBeGuessed.charAt(i) != " ") {
+				arrayFromWord[j] = false;
+			} else {
+				arrayFromWord[j] = true;
+			}
+			j++
+		}
+
+
+		console.log("Wins: " + wins + " Losses: " + losses + " GuessesLeft: " + guessesLeft + " Guesses so far: " + guessesSoFar + " Computer picked: " + wordToBeGuessed);
+		console.log(arrayFromWord);
+
+		// start listening for events
+		document.onkeyup = function(event) {
+
+			// When user presses a key, it records it and saves to userGuess
+			userGuess = String.fromCharCode(event.keyCode).toLowerCase();
+
+			// if userGuess exists in the array then switch its associated
+			// array pair from false to true
+			for (var i = 0; i < arrayFromWord.length; i++) {
+				if (arrayFromWord[i] == userGuess) {
+					arrayFromWord[i+1] = true;
+				}
+			}
+			console.log(arrayFromWord);
+
+
+			// Displaying progress to HTML
+			// Display arrayFromWord by building html for it
+			// html begins with a non space character otherwise getting
+			// undefined as first character when building the array
+			// set variable html for output display
+			var html = "&#8203;";
+			for (i = 0, j = 0; i < (arrayFromWord.length / 2); i++) {
+					if (arrayFromWord[j+1] == true) {
+					html += arrayFromWord[j];
+				} else {
+					html += "_";
+				}
+				html += "&nbsp;";
+				j=j+2;
+			}
+			console.log(html);
+
+			// place html into the game ID
+			document.querySelector("#game").innerHTML = html;
+
+		}
+
+	</script>
+
 </body>
 
 </html>
