@@ -22,8 +22,14 @@
 <body>
 
 	<!-- This is what will be initially displayed on the screen -->
+	<div id="instructions">
+		<p>This is where the instructions will go</p>
+	</div>
 	<div id="game">
-		<p>This is where the word will go</p>
+		<p>This is where game progress will go</p>
+	</div>
+	<div id="stats">
+		<p>This is where wins and losses counter will go</p>
 	</div>
 
 
@@ -56,17 +62,21 @@
 		// then the element false, and so on. For example:
 		// if the word was "hi" then array would be ["h", false, "i", false]
 		// However, if the character is a space then the next element should be true
-
-		for (var i = 0, j = 0; i < wordToBeGuessed.length; i++) {
-			arrayFromWord[j] = wordToBeGuessed.charAt(i);
-			j++
-			if (wordToBeGuessed.charAt(i) != " ") {
-				arrayFromWord[j] = false;
-			} else {
-				arrayFromWord[j] = true;
+		// first define the function (for later reuse) then call it right away
+		function breakWordIntoArray() {
+			for (var i = 0, j = 0; i < wordToBeGuessed.length; i++) {
+				arrayFromWord[j] = wordToBeGuessed.charAt(i);
+				j++
+				if (wordToBeGuessed.charAt(i) != " ") {
+					arrayFromWord[j] = false;
+				} else {
+					arrayFromWord[j] = true;
+				}
+				j++
 			}
-			j++
 		}
+		// now that function has been defined, let's call it
+		breakWordIntoArray();
 
 		// function to help with console logging various variables
 		function consoleLogs() {
@@ -80,8 +90,24 @@
 		}
 
 		function resetGame() {
-			
+			guessesLeft = 13;
+			guessesSoFar = [];
+			wordToBeGuessed = wordsList[Math.floor(Math.random() * wordsList.length)];
+			arrayFromWord = [];
+			breakWordIntoArray();
+			var htmlInstructions="Press any key to begin guessing";
+			document.querySelector("#instructions").innerHTML = htmlInstructions;
+			var htmlGameInitial = "";
+			for (var i = 0; i < wordToBeGuessed.length; i++) {
+				htmlGameInitial += "_ ";
+			}
+			document.querySelector("#game").innerHTML = htmlGameInitial;
+			var htmlStats = "Wins: " + wins + " Losses: " + losses + " Guesses Left : " + guessesLeft;
+			document.querySelector("#stats").innerHTML = htmlStats;
+
 		}
+
+		resetGame()
 
 		// debugging
 		consoleLogs();
@@ -100,6 +126,8 @@
 			if (arrayFromWord.indexOf(userGuess) < 0 && guessesSoFar.indexOf(userGuess) < 0 && alphabetLetters.indexOf(userGuess) >= 0) {
 				guessesSoFar[guessesSoFar.length]=userGuess;
 				guessesLeft--;
+				var audio = new Audio("assets/audio/doh1.mp3");
+				audio.play();
 			}
 
 			// if userGuess exists in the array then switch its associated
@@ -107,6 +135,8 @@
 			for (var i = 0; i < arrayFromWord.length; i++) {
 				if (arrayFromWord[i] == userGuess) {
 					arrayFromWord[i+1] = true;
+					var audio = new Audio("assets/audio/woohoo.mp3");
+					audio.play();
 				}
 			}
 
@@ -127,31 +157,36 @@
 
 			// place html into the game ID
 			document.querySelector("#game").innerHTML = html;
+			htmlStats = "Wins: " + wins + " Losses: " + losses + " Guesses Left : " + guessesLeft;
+			document.querySelector("#stats").innerHTML = htmlStats;
 
 			// debugging
 			consoleLogs();
 
+			// reset the html variable so we can rebuild it after next user guess
+			html="";
+
 			// check to see if user has won which will mean all the
 			// letters have been revealed, or that no false flags remain
 			if (arrayFromWord.indexOf(false) < 0 ) {
-				console.log("User Wins");
+				console.log("USER WINS");
 				wins++;
+				var audio = new Audio("assets/audio/champion.mp3");
+				audio.play();
 				resetGame();
 			}
 
 			// check to see if user has lost which will mean guessesLeft = 0
 			if (guessesLeft == 0) {
-				console.log("User Loses");
+				console.log("USER LOSES");
 				losses++;
+				var audio = new Audio("assets/audio/crap.mp3");
+				audio.play();
 				resetGame();
 			}
 
-
-			// reset the html variable so we can rebuild it after next user guess
-			html="";
-
 			// debugging
-			//consoleLogs();
+			consoleLogs();
 		}
 		// end listening for events
 
