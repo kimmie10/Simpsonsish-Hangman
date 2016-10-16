@@ -68,7 +68,7 @@
 			j++
 		}
 
-
+		// function to help with console logging various variables
 		function consoleLogs() {
 			console.log("wins: " + wins + "\n" + "losses: " + losses + "\n");
 			console.log("guessesLeft: " + guessesLeft + "\n");
@@ -79,8 +79,12 @@
 			console.log("--------------------------------");
 		}
 
-		consoleLogs();
+		function resetGame() {
+			
+		}
 
+		// debugging
+		consoleLogs();
 
 		// start listening for events
 		document.onkeyup = function(event) {
@@ -124,9 +128,32 @@
 			// place html into the game ID
 			document.querySelector("#game").innerHTML = html;
 
+			// debugging
 			consoleLogs();
+
+			// check to see if user has won which will mean all the
+			// letters have been revealed, or that no false flags remain
+			if (arrayFromWord.indexOf(false) < 0 ) {
+				console.log("User Wins");
+				wins++;
+				resetGame();
+			}
+
+			// check to see if user has lost which will mean guessesLeft = 0
+			if (guessesLeft == 0) {
+				console.log("User Loses");
+				losses++;
+				resetGame();
+			}
+
+
+			// reset the html variable so we can rebuild it after next user guess
 			html="";
+
+			// debugging
+			//consoleLogs();
 		}
+		// end listening for events
 
 	</script>
 
