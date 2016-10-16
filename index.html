@@ -30,7 +30,10 @@
 	<script type="text/javascript">
 
 		// Define words that can computer will select from
-		var wordsList = ["falkens maze", "black jack", "gin rummy", "hearts", "bridge", "checkers", "chess", "poker", "fighter combat", "guerrilla engagement", "desert warfare", "air to ground actions", "theaterwide tactical warfare", "theaterwide biotoxic and chemical warfare", "global thermonuclear war"];
+		var wordsList = ["homer simpson", "bart simpson", "marge simpson", "mr burns", "lisa simpson", "ned flanders", "moe szyslak", "barnie gumble", "comic book guy", "chief wiggum", "nelson muntz", "martin prince"];
+
+		// Define alphabet letters that user can pick from
+		var alphabetLetters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 		// Set the initial global variables
 		var wins = 0;
@@ -44,7 +47,9 @@
 		// Have computer pick a word and store it in wordToBeGuessed
 		var wordToBeGuessed = wordsList[Math.floor(Math.random() * wordsList.length)];
 		// arrayFromWord is an array that will hold the letters of the wordToBeGuessed
-		var arrayFromWord = []
+		var arrayFromWord = [];
+		// html is what will be populated back into the html from the javascript
+		var html = "";
 
 		// rip the wordToBeGuessed apart into an array such that each character is one
 		// array element followed by false as the next element then the second character
@@ -64,14 +69,34 @@
 		}
 
 
-		console.log("Wins: " + wins + " Losses: " + losses + " GuessesLeft: " + guessesLeft + " Guesses so far: " + guessesSoFar + " Computer picked: " + wordToBeGuessed);
-		console.log(arrayFromWord);
+		function consoleLogs() {
+			console.log("wins: " + wins + "\n" + "losses: " + losses + "\n");
+			console.log("guessesLeft: " + guessesLeft + "\n");
+			console.log("guessesSoFar: " + guessesSoFar + "\n");
+			console.log("wordToBeGuessed: " + wordToBeGuessed + "\n");
+			console.log("arrayFromWord: " + arrayFromWord + "\n");
+			console.log("html: " + html + "\n");
+			console.log("--------------------------------");
+		}
+
+		consoleLogs();
+
 
 		// start listening for events
 		document.onkeyup = function(event) {
 
 			// When user presses a key, it records it and saves to userGuess
 			userGuess = String.fromCharCode(event.keyCode).toLowerCase();
+
+			// if user enters a valid letter, then check:
+			// if the user pick doesn't exit in the array of prior picks &
+			// it also doesn't exist in the array of the letters of the word
+			// to be guess, then add the letter to the prior guesses array
+			// and also reduce the guesses left by one
+			if (arrayFromWord.indexOf(userGuess) < 0 && guessesSoFar.indexOf(userGuess) < 0 && alphabetLetters.indexOf(userGuess) >= 0) {
+				guessesSoFar[guessesSoFar.length]=userGuess;
+				guessesLeft--;
+			}
 
 			// if userGuess exists in the array then switch its associated
 			// array pair from false to true
@@ -80,15 +105,12 @@
 					arrayFromWord[i+1] = true;
 				}
 			}
-			console.log(arrayFromWord);
-
 
 			// Displaying progress to HTML
 			// Display arrayFromWord by building html for it
 			// html begins with a non space character otherwise getting
 			// undefined as first character when building the array
 			// set variable html for output display
-			var html = "&#8203;";
 			for (i = 0, j = 0; i < (arrayFromWord.length / 2); i++) {
 					if (arrayFromWord[j+1] == true) {
 					html += arrayFromWord[j];
@@ -98,11 +120,12 @@
 				html += "&nbsp;";
 				j=j+2;
 			}
-			console.log(html);
 
 			// place html into the game ID
 			document.querySelector("#game").innerHTML = html;
 
+			consoleLogs();
+			html="";
 		}
 
 	</script>
