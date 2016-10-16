@@ -47,6 +47,7 @@
 				<div class="col-md-12" id="instructions"></div>
 				<div class="col-md-12" id="game"></div>
 				<div class="col-md-12" id="stats"></div>
+				<div class="col-md-12" id="guesses"></div>
 			</div>
 		</div>
 		<div class="col-md-2" id="homerImage">
@@ -156,16 +157,19 @@
 			// When user presses a key, it records it and saves to userGuess
 			userGuess = String.fromCharCode(event.keyCode).toLowerCase();
 
-			// if user enters a valid letter, then check:
-			// if the user pick doesn't exit in the array of prior picks &
+			// if user's pick doesn't exist in the array of prior picks, and
 			// it also doesn't exist in the array of the letters of the word
-			// to be guess, then add the letter to the prior guesses array
-			// and also reduce the guesses left by one
+			// to be guessed, then reduce the guesses left by one and play
+			// doh sound. make sure to verify user's pick is in the alphabet,
+			// otherwise ignore it.
 			if (arrayFromWord.indexOf(userGuess) < 0 && guessesSoFar.indexOf(userGuess) < 0 && alphabetLetters.indexOf(userGuess) >= 0) {
-				guessesSoFar[guessesSoFar.length]=userGuess;
 				guessesLeft--;
 				var audio = new Audio("assets/audio/doh1.mp3");
 				audio.play();
+			}
+			// add all alphabetic guesses to guessesSoFar if not already in there
+			if (guessesSoFar.indexOf(userGuess) < 0 && alphabetLetters.indexOf(userGuess) >= 0) {
+				guessesSoFar[guessesSoFar.length]=userGuess;
 			}
 
 			// if userGuess exists in the array then switch its associated
@@ -198,6 +202,14 @@
 			// now build the stats string to update document via stats id
 			htmlStats = "<p><h3>Wins: " + wins + " Losses: " + losses + " Guesses Left : " + guessesLeft + "</h3></p>";
 			document.querySelector("#stats").innerHTML = htmlStats;
+
+			// also build the guesses string to update document via guesses id
+			htmlGuesses = "<p><h3>"
+			for (var i = 0; i < guessesSoFar.length; i++) {
+				htmlGuesses += guessesSoFar[i] + "&nbsp;";
+			}
+			htmlGuesses += "</h3></p>";
+			document.querySelector("#guesses").innerHTML = htmlGuesses;
 
 			// debugging
 			consoleLogs();
