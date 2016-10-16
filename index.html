@@ -22,6 +22,7 @@
 <body>
 
 	<!-- This is what will be initially displayed on the screen -->
+	<!-- Using the bootstrap grid system to lay everything out -->
 	<div class="row">&nbsp;</div>
 	<div class="row">
 		<div class="col-md-3"></div>
@@ -42,12 +43,14 @@
 		<div class="col-md-2"></div>
 		<div class="col-md-6">
 			<div class="row">
+				<!-- Next three divs have ids for js data manipulation -->
 				<div class="col-md-12" id="instructions"></div>
 				<div class="col-md-12" id="game"></div>
 				<div class="col-md-12" id="stats"></div>
 			</div>
 		</div>
 		<div class="col-md-2" id="homerImage">
+			<!-- This div has the homeImage id which will be used to change image via js -->
 			<img src="assets/images/homerthinking.png" class="img-responsive" alt="Homer">
 		</div>
 		<div class="col-md-2"></div>
@@ -58,7 +61,7 @@
 
 	<script type="text/javascript">
 
-		// Define words that can computer will select from
+		// Define words that computer will select from
 		var wordsList = ["homer simpson", "bart simpson", "marge simpson", "mr burns", "lisa simpson", "ned flanders", "moe szyslak", "milhouse van houten", "barney gumble", "waylon smithers", "edna krabappel", "krusty the clown", "patty bouvier", "principal skinner", "lenny leonard", "grampa simpson", "comic book guy", "chief wiggum", "nelson muntz", "reverend lovejoy", "kent brockman", "mayor quimby", "miss hoover", "ralph wiggum", "martin prince", "groundskeeper willie", "dr hibbert", "troy mcclure", "carl carlson", "helen lovejoy", "agnes skinner", "luann van houten"];
 
 		// Define alphabet letters that user can pick from
@@ -101,7 +104,7 @@
 		// now that function has been defined, let's call it
 		breakWordIntoArray();
 
-		// function to help with console logging various variables
+		// function for debugging via console logging used during coding
 		function consoleLogs() {
 			console.log("wins: " + wins + "\n" + "losses: " + losses + "\n");
 			console.log("guessesLeft: " + guessesLeft + "\n");
@@ -111,15 +114,22 @@
 			console.log("--------------------------------");
 		}
 
+		// function that gets run when the game is won or lost
 		function resetGame() {
+			// lets reset the variables / stats for the game
 			guessesLeft = 13;
 			guessesSoFar = [];
 			wordToBeGuessed = wordsList[Math.floor(Math.random() * wordsList.length)];
 			arrayFromWord = [];
 			breakWordIntoArray();
+			// lets update the document via instructions id
 			var htmlInstructions="<p><h3>Press any key to begin guessing</p></h3>";
 			document.querySelector("#instructions").innerHTML = htmlInstructions;
 			var htmlGameInitial = "<p><h1>";
+			// lets also populate initial game layout of dashes on the document
+			// but to do so, we have to build the string
+			// for every character in the word, place an underscore and a space
+			// and for every space in the word, place two spaces
 			for (var i = 0; i < wordToBeGuessed.length; i++) {
 				if (wordToBeGuessed.charAt(i) == " ") {
 					htmlGameInitial += "&nbsp;&nbsp;";
@@ -127,12 +137,14 @@
 					htmlGameInitial += "_&nbsp;";
 				}
 			}
+			// remember to include h1 and p1 header open and close
 			htmlGameInitial += "</h1></p>"
 			document.querySelector("#game").innerHTML = htmlGameInitial;
 			var htmlStats = "<p><h3>" + "Wins: " + wins + " Losses: " + losses + " Guesses Left : " + guessesLeft + "</h3></p>";
 			document.querySelector("#stats").innerHTML = htmlStats;
 		}
 
+		// lets begin by ressing the game
 		resetGame()
 
 		// debugging
@@ -167,9 +179,7 @@
 			}
 
 			// Displaying progress to HTML
-			// Display arrayFromWord by building html for it
-			// html begins with a non space character otherwise getting
-			// undefined as first character when building the array
+			// Display arrayFromWord by building html string for it
 			// set variable html for output display
 			for (i = 0, j = 0; i < (arrayFromWord.length / 2); i++) {
 					if (arrayFromWord[j+1] == true) {
@@ -184,6 +194,8 @@
 
 			// place html into the game ID
 			document.querySelector("#game").innerHTML = html;
+
+			// now build the stats string to update document via stats id
 			htmlStats = "<p><h3>Wins: " + wins + " Losses: " + losses + " Guesses Left : " + guessesLeft + "</h3></p>";
 			document.querySelector("#stats").innerHTML = htmlStats;
 
@@ -194,25 +206,33 @@
 			html="<p><h1>";
 
 			// check to see if user has won which will mean all the
-			// letters have been revealed, or that no false flags remain
+			// letters have been revealed (no false flags remain in the array)
 			if (arrayFromWord.indexOf(false) < 0 ) {
 				console.log("USER WINS");
+				// user has won, increment wins
 				wins++;
+				// play homer's victory song
 				var audio = new Audio("assets/audio/champion.mp3");
+				audio.play();
+				// update homer's image to victory image
 				var homerImage="<img src=\"assets/images/homerwins.jpg\" class=\"img-responsive\" alt=\"Simpsons Characters\">";
 				document.querySelector("#homerImage").innerHTML = homerImage;
-				audio.play();
+				// finally reset the game for new round
 				resetGame();
 			}
 
 			// check to see if user has lost which will mean guessesLeft = 0
 			if (guessesLeft == 0) {
 				console.log("USER LOSES");
+				// user has lost, increment losses
 				losses++;
+				// play homer's losing scream
 				var audio = new Audio("assets/audio/crap.mp3");
+				audio.play();
+				// update homer's image to loss image
 				var homerImage="<img src=\"assets/images/homerloss.gif\" class=\"img-responsive\" alt=\"Simpsons Characters\">";
 				document.querySelector("#homerImage").innerHTML = homerImage;
-				audio.play();
+				// finally reset the game for a new round
 				resetGame();
 			}
 
