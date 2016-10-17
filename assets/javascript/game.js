@@ -112,9 +112,12 @@ document.onkeyup = function(event) {
 	// array pair from false to true
 	for (var i = 0; i < arrayFromWord.length; i++) {
 		if (arrayFromWord[i] === userGuess) {
+			// if the letter wasn't previously guessed then play woohoo
+			if (arrayFromWord[i+1] == false) {
+				var audio = new Audio("assets/audio/woohoo.mp3");
+				audio.play();
+			}
 			arrayFromWord[i+1] = true;
-			var audio = new Audio("assets/audio/woohoo.mp3");
-			audio.play();
 		}
 	}
 
