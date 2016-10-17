@@ -1,3 +1,7 @@
+// -----------------------
+// GLOBAL VARIABLES FIRST!
+// -----------------------
+
 // Define words that computer will select from
 var wordsList = ["homer simpson", "bart simpson", "marge simpson", "mr burns", "lisa simpson", "ned flanders", "moe szyslak", "milhouse van houten", "barney gumble", "waylon smithers", "edna krabappel", "krusty the clown", "patty bouvier", "principal skinner", "lenny leonard", "grampa simpson", "comic book guy", "chief wiggum", "nelson muntz", "reverend lovejoy", "kent brockman", "mayor quimby", "miss hoover", "ralph wiggum", "martin prince", "groundskeeper willie", "dr hibbert", "troy mcclure", "carl carlson", "helen lovejoy", "agnes skinner", "luann van houten"];
 
@@ -20,6 +24,10 @@ var arrayFromWord = [];
 // html is what will be populated back into the html from the javascript
 var html = "<p><h1>";
 
+// ----------------------
+// FUNCTIONS COME SECOND!
+// ----------------------
+
 // rip the wordToBeGuessed apart into an array such that each character is one
 // array element followed by false as the next element then the second character
 // then the element false, and so on. For example:
@@ -38,8 +46,6 @@ function breakWordIntoArray() {
 		j++
 	}
 }
-// now that function has been defined, let's call it
-breakWordIntoArray();
 
 // function for debugging via console logging used during coding
 function consoleLogs() {
@@ -81,8 +87,15 @@ function resetGame() {
 	document.querySelector("#stats").innerHTML = htmlStats;
 }
 
-// lets begin by ressing the game
-resetGame()
+// -----------------------
+// NOW BEGIN THE MAIN GAME
+// -----------------------
+
+// lets begin by breaking apart our selected word into an array of letter/flag
+breakWordIntoArray();
+
+// lets begin by resetting the game
+resetGame();
 
 // debugging
 consoleLogs();
