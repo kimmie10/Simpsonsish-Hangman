@@ -12,7 +12,7 @@ var alphabetLetters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l
 var wins = 0;
 var losses = 0;
 // guessesLeft is how many attempts user has remaining in the round
-var guessesLeft = 13;
+var guessesLeft = 12;
 // guessesSoFar is an array that will hold all the user's guesses in each round
 var guessesSoFar = [];
 // userGuess is what the user picks by pressing a key
@@ -21,7 +21,7 @@ var userGuess = null;
 var wordToBeGuessed = wordsList[Math.floor(Math.random() * wordsList.length)];
 // arrayFromWord is an array that will hold the letters of the wordToBeGuessed
 var arrayFromWord = [];
-// html is what will be populated back into the html from the javascript
+// html is what will be injected back into the html from the javascript
 var html = "<p><h1>";
 
 // ----------------------
@@ -60,7 +60,7 @@ function consoleLogs() {
 // function that gets run when the game is won or lost
 function resetGame() {
 	// lets reset the variables / stats for the game
-	guessesLeft = 13;
+	guessesLeft = 12;
 	guessesSoFar = [];
 	wordToBeGuessed = wordsList[Math.floor(Math.random() * wordsList.length)];
 	arrayFromWord = [];
@@ -87,25 +87,39 @@ function resetGame() {
 	document.querySelector("#stats").innerHTML = htmlStats;
 }
 
-// -----------------------
-// NOW BEGIN THE MAIN GAME
-// -----------------------
+// function that displays progress as the game is played
+function displayProgress() {
+	// Displaying progress to HTML
+	// Display arrayFromWord by building html string for it
+	// set variable html for output display
+	for (i = 0, j = 0; i < (arrayFromWord.length / 2); i++) {
+			if (arrayFromWord[j+1] == true) {
+			html += arrayFromWord[j];
+		} else {
+			html += "_";
+		}
+		html += "&nbsp;";
+		j=j+2;
+	}
+	html += "</h1></p>"	
+	// place html into the game ID
+	document.querySelector("#game").innerHTML = html;
 
-// lets begin by breaking apart our selected word into an array of letter/flag
-breakWordIntoArray();
+	// now build the stats string to update document via stats id
+	htmlStats = "<p><h3>Wins: " + wins + " Losses: " + losses + " Guesses Left : " + guessesLeft + "</h3></p>";
+	document.querySelector("#stats").innerHTML = htmlStats;
 
-// lets begin by resetting the game
-resetGame();
+	// also build the guesses string to update document via guesses id
+	htmlGuesses = "<p><h3>"
+	for (var i = 0; i < guessesSoFar.length; i++) {
+		htmlGuesses += guessesSoFar[i] + "&nbsp;";
+	}
+	htmlGuesses += "</h3></p>";
+	document.querySelector("#guesses").innerHTML = htmlGuesses;
+}
 
-// debugging
-consoleLogs();
-
-// start listening for events
-document.onkeyup = function(event) {
-
-	// When user presses a key, it records it and saves to userGuess
-	userGuess = String.fromCharCode(event.keyCode).toLowerCase();
-
+// function to check user guess as valid and update arrays
+function validateUserGuess() {
 	// if user's pick doesn't exist in the array of prior picks, and
 	// it also doesn't exist in the array of the letters of the word
 	// to be guessed, then reduce the guesses left by one and play
@@ -132,43 +146,11 @@ document.onkeyup = function(event) {
 			}
 			arrayFromWord[i+1] = true;
 		}
-	}
+	}	
+}
 
-	// Displaying progress to HTML
-	// Display arrayFromWord by building html string for it
-	// set variable html for output display
-	for (i = 0, j = 0; i < (arrayFromWord.length / 2); i++) {
-			if (arrayFromWord[j+1] == true) {
-			html += arrayFromWord[j];
-		} else {
-			html += "_";
-		}
-		html += "&nbsp;";
-		j=j+2;
-	}
-	html += "</h1></p>"
-
-	// place html into the game ID
-	document.querySelector("#game").innerHTML = html;
-
-	// now build the stats string to update document via stats id
-	htmlStats = "<p><h3>Wins: " + wins + " Losses: " + losses + " Guesses Left : " + guessesLeft + "</h3></p>";
-	document.querySelector("#stats").innerHTML = htmlStats;
-
-	// also build the guesses string to update document via guesses id
-	htmlGuesses = "<p><h3>"
-	for (var i = 0; i < guessesSoFar.length; i++) {
-		htmlGuesses += guessesSoFar[i] + "&nbsp;";
-	}
-	htmlGuesses += "</h3></p>";
-	document.querySelector("#guesses").innerHTML = htmlGuesses;
-
-	// debugging
-	consoleLogs();
-
-	// reset the html variable so we can rebuild it after next user guess
-	html="<p><h1>";
-
+// function to see whether user has won the game
+function hasUserWon() {
 	// check to see if user has won which will mean all the
 	// letters have been revealed (no false flags remain in the array)
 	if (arrayFromWord.indexOf(false) < 0 ) {
@@ -183,8 +165,11 @@ document.onkeyup = function(event) {
 		document.querySelector("#homerImage").innerHTML = homerImage;
 		// finally reset the game for new round
 		resetGame();
-	}
+	}	
+}
 
+// function to see whether user has lost the game
+function hasUserLost() {
 	// check to see if user has lost which will mean guessesLeft = 0
 	if (guessesLeft == 0) {
 		console.log("USER LOSES");
@@ -199,6 +184,52 @@ document.onkeyup = function(event) {
 		// finally reset the game for a new round
 		resetGame();
 	}
+
+}
+
+// function to reset the html variable
+function resetHtmlVariable() {
+	// reset the html variable so we can rebuild it after next user guess
+	html="<p><h1>";
+
+}
+
+// ----------------------
+// MAIN GAME COMES THIRD!
+// ----------------------
+
+// lets begin by breaking apart our selected word into an array of letter/flag
+breakWordIntoArray();
+
+// lets begin by resetting the game
+resetGame();
+
+// debugging
+consoleLogs();
+
+// start listening for events
+document.onkeyup = function(event) {
+
+	// When user presses a key, it records it and saves to userGuess
+	userGuess = String.fromCharCode(event.keyCode).toLowerCase();
+
+	// check if user's guess is valid and update appropriate array
+	validateUserGuess();
+
+	// inject progress so far back into html
+	displayProgress();
+
+	// debugging
+	consoleLogs();
+
+	// reset the html variable
+	resetHtmlVariable();
+
+	// check whether user has won and reset if true
+	hasUserWon();
+
+	// check whether user has lost and reset if true
+	hasUserLost();
 
 	// debugging
 	consoleLogs();
