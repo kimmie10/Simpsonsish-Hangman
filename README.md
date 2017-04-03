@@ -1,4 +1,4 @@
-# The Simspons-ish Hangman
+# Simspons-ish Hangman
 
 A fun little JavaScript hangman game with a Simpsons theme.
 
