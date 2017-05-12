@@ -2,6 +2,9 @@
 
 A fun little JavaScript hangman game with a Simpsons theme.
 
+Live site may be seen at https://realzaidiguy.github.io/Simpsonsish-Hangman/
+
+
 ***
 
 Please click below to watch video runthrough:
